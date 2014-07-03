@@ -26,9 +26,12 @@ define prezto::install ($repo = 'git://github.com/sorin-ionescu/prezto.git') {
   $zprezto = "${home}/.zprezto"
   $runcoms = "${zprezto}/runcoms"
 
-  user {"prezto for ${name}":
-    name => $name,
-    shell => '/usr/bin/zsh'
+
+  if(!defined(User[$name])) {
+    user {"shell change for ${name}":
+      name => $name,
+      shell => '/usr/bin/zsh'
+    }
   }
 
   vcsrepo { $zprezto:
