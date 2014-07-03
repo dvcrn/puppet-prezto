@@ -27,6 +27,7 @@ define prezto::install ($repo = 'git://github.com/sorin-ionescu/prezto.git') {
   $runcoms = "${zprezto}/runcoms"
 
   user {"prezto for ${name}":
+    name => $name,
     shell => '/usr/bin/zsh'
   }
 
