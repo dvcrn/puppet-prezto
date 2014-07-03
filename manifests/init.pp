@@ -7,7 +7,7 @@
 #
 # === Parameters
 #
-#   [*git_repo*]
+#   [*repo*]
 #     Set which prezto git repo to download
 #     Default: git://github.com/sorin-ionescu/prezto.git
 #
