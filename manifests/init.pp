@@ -13,10 +13,11 @@
 #
 # === Examples
 #
-# class { 'prezto':
-#   repo => 'git://github.com/sorin-ionescu/prezto.git'
+# class { 'prezto': }
+#
+# prezto::install { 'username':
+#   repo = 'git://github.com/sorin-ionescu/prezto.git'
 # }
-# prezto::install { 'username': }
 #
 #
 class prezto ($repo = 'git://github.com/sorin-ionescu/prezto.git') {
@@ -32,26 +33,4 @@ class prezto ($repo = 'git://github.com/sorin-ionescu/prezto.git') {
       ensure => present
     }
   }
-
-  user { ['zprezto']:
-      ensure => 'present',
-      home => "/home/zprezto",
-      managehome => true,
-      password => '!',
-  }
-
-  vcsrepo { "/home/zprezto/checkout":
-    ensure => present,
-    provider => git,
-    source => $repo,
-    revision => 'master',
-    require => [
-      Package['zsh'],
-      Package['git'],
-      File['/home/zprezto/.ssh']
-    ],
-    force => true,
-    user => 'zprezto'
-  }
-
 }

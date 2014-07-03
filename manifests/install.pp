@@ -12,10 +12,13 @@
 # === Examples
 #
 # class { 'prezto': }
-# prezto::install { 'username': }
+#
+# prezto::install { 'username':
+#   repo = 'git://github.com/sorin-ionescu/prezto.git'
+# }
 #
 #
-define prezto::install () {
+define prezto::install ($repo = 'git://github.com/sorin-ionescu/prezto.git') {
 
   if $name == 'root' { $home = '/root' } else { $home = "/home/${name}" }
   $zprezto = "${home}/.zprezto"
@@ -25,53 +28,52 @@ define prezto::install () {
     shell => '/usr/bin/zsh'
   }
 
-  file { $zprezto:
-    ensure => directory,
-    owner => $name,
-    group => $name,
-    recurse => true,
-    source => "/home/zprezto/checkout"
+  vcsrepo { $zprezto:
+    ensure => present,
+    provider => git,
+    source => $repo,
+    revision => 'master',
+    require => [
+      Package['zsh'],
+      Package['git']
+    ],
+    force => true,
+    user => $name
   }
 
   file { "${home}/.zlogin":
     ensure  => symlink,
     target  => "${runcoms}/zlogin",
-    require => File[$zprezto]
+    require => Vcsrepo[$zprezto]
   }
 
   file { "${home}/.zlogout":
     ensure  => symlink,
     target  => "${runcoms}/zlogout",
-    require => File[$zprezto]
+    require => Vcsrepo[$zprezto]
   }
 
   file { "${home}/.zpreztorc":
     ensure  => symlink,
     target  => "${runcoms}/zpreztorc",
-    require => File[$zprezto]
+    require => Vcsrepo[$zprezto]
   }
 
   file { "${home}/.zprofile":
     ensure  => symlink,
     target  => "${runcoms}/zprofile",
-    require => File[$zprezto]
+    require => Vcsrepo[$zprezto]
   }
 
   file { "${home}/.zshenv":
     ensure  => symlink,
     target  => "${runcoms}/zshenv",
-    require => File[$zprezto]
+    require => Vcsrepo[$zprezto]
   }
 
   file { "${home}/.zshrc":
     ensure  => symlink,
     target  => "${runcoms}/zshrc",
-    require => File[$zprezto]
-  }
-
-  file { "${zprezto}/.git":
-    ensure => absent,
-    require => File[$zprezto],
-    force => true
+    require => Vcsrepo[$zprezto]
   }
 }
